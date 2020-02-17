@@ -1,0 +1,1 @@
+export const str: String = "Hello world";

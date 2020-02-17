@@ -2,8 +2,9 @@
   "name": "real-time-quiz",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
+    "start": "tsc ./src/index.ts --watch --strict --jsx react --outDir dist --target ES3 --module ES6",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +19,8 @@
   },
   "homepage": "https://github.com/jonathanazulay/real-time-quiz#readme",
   "devDependencies": {
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.5",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
   }
