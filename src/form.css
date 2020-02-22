@@ -1,0 +1,26 @@
+.quiz {
+  padding: 1rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.quiz > .quiz__form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+} 
+.quiz > .quiz__form textarea {
+  height: 400px;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 2px;
+  box-shadow: #0808086b 0px 8px 15px 1px;
+}
+
+.quiz > .quiz__form textarea:focus {
+  outline: none;
+}
