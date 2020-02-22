@@ -8,10 +8,10 @@ const app = express()
 const server = http.createServer({}, app)
 const ws = new WebSocket.Server({ server: server, path: '/ws' })
 const { make: makeQuiz, vote: voteQuiz } = require('./quiz')
+const createPubsub = require('./pubsub')
 
 let quizes = {}
-let connections = []
-let subscriptions = {}
+let pubsub = createPubsub()
 
 function handleMessage (fromSocket, data, user) {
   if (!data.type) { return }
@@ -24,6 +24,7 @@ function handleMessage (fromSocket, data, user) {
       break
     case 'subscribequiz':
       createSubscription(fromSocket, data.quizId)
+      pubsub.broadcast(data.quizId, 'hello from ' + data.quizId)
       break
     default:
       break
@@ -31,8 +32,7 @@ function handleMessage (fromSocket, data, user) {
 }
 
 function createSubscription (socket, quizId) {
-  const subscribedSockets = subscriptions[quizId] || new Set()
-  subscribedSockets.add(socket)
+  pubsub.subscribe(socket, quizId)
 }
 
 function createVote (quizId, vote, user) {
@@ -70,8 +70,7 @@ app.get('/quizes', function getQuizes (req, res) {
 
 ws.on('connection', (sock, req) => {
   const user = req.headers.cookie && cookie.parse(req.headers.cookie).voter
-  connections.push(sock)
-  console.log('socket', user)
+  //connections.push(sock)
   sock.on('message', (d) => {
     let message;
     try {
@@ -101,6 +100,6 @@ server.listen(1234)
     "2",
     "kallenaka2"
   ))
-  
+
   console.log(quizes[Object.keys(quizes)[3]])
   */
