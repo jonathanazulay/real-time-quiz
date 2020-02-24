@@ -27,9 +27,7 @@ const vote = function votePoll (poll, vote, voter) {
   if (!(vote in poll.votes)) { throw new Error("not valid vote") }
   
   if (poll.voters[voter] !== undefined) {
-    console.log('remove vote', poll, voter)
-    const pollWithOldVoteRemoved = removeVote(poll, voter)
-    return votePoll(pollWithOldVoteRemoved, vote, voter);
+    poll = removeVote(poll, voter)
   }
 
   const newVotes = {
