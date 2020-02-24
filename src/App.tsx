@@ -4,7 +4,6 @@ import { PollView } from './PollView'
 import { Poll } from './poll'
 
 const addr = `ws://${window.location.host}/ws`
-console.log(addr)
 
 interface PollAPI {
   create: (text: string) => void,
