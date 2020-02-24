@@ -71,7 +71,7 @@ function App() {
       <div className="slide">
         {PollAPI ? <CreatePoll onSubmit={PollAPI ? () => PollAPI.create(text || '') : () => { }} onChangeText={setText} text={text}></CreatePoll> : null}
       </div>
-      {activePoll !== undefined ? <div className="slide" ref={ref}>
+      {activePoll !== undefined ? <div className="slide" ref={resultPageEl}>
         <PollView onVote={(alternative) => PollAPI?.vote(activePoll?.id, alternative)} poll={activePoll}></PollView>
       </div> : null}
     </div>
