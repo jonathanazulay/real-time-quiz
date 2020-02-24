@@ -19,11 +19,10 @@ const randomGreeting = (() => {
   return greetings[Math.floor(Math.random() * (greetings.length))]
 })()
 
-
 export const CreatePoll = ({ onChangeText = (_e: any) => {}, onSubmit = () => {}, text = '' }) => (
   <div className="poll__form">
-    <h2><span>{randomGreeting},</span><br /> what do you want to make a poll about today?</h2>
+    <h2><span>{randomGreeting},</span><br /> what do you want to have estimated today?</h2>
     <textarea placeholder={placeholderText} onChange={e => onChangeText(e.target.value)} value={text}></textarea>
-    <button onClick={() => onSubmit()}>Continue...</button>
+    <button onClick={() => onSubmit()}>Estimate away!</button>
   </div>
 )

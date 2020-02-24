@@ -4,13 +4,11 @@ const http = require('http')
 const cookie = require('cookie')
 const app = express()
 const path = require('path')
-
 const { make: makePoll, vote: votePoll } = require('./poll')
 const createPubsub = require('./pubsub')
 
 let polls = {}
 let pubsub = createPubsub()
-
 function handleMessage(fromSocket, data, user) {
   if (!data.type) { return }
   switch (data.type) {
@@ -43,7 +41,7 @@ function broadcastPoll(pollId) {
 }
 
 function createVote(pollId, vote, user) {
-  if (!polls[pollId]) { throw new Error("poll does not exist") }
+  if (!polls[pollId]) { throw new Error('poll does not exist') }
   polls[pollId] = {
     ...polls[pollId],
     poll: votePoll(polls[pollId].poll, vote, user)
@@ -51,11 +49,11 @@ function createVote(pollId, vote, user) {
 }
 
 function createPoll(text) {
-  const id = (Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).toString(36);
+  const id = (Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).toString(36)
   const newPoll = {
     id,
     voters: new Set(),
-    poll: makePoll(text, ["0", "1/2", "1", "2", "3", "5", "8", "13"])
+    poll: makePoll(text, ['0P', '1/2P', '1P', '2P', '3P', '5P', '8P', '13P'])
   }
   polls = {
     ...polls,
@@ -67,7 +65,7 @@ function createPoll(text) {
 app.use(express.static('./build'))
 app.use('*', function (req, res) {
   res.sendFile(path.resolve(__dirname + '/../build/index.html'))
-});
+})
 
 const server = http.createServer({}, app)
 const ws = new WebSocket.Server({ server: server, path: '/ws' })
@@ -79,20 +77,20 @@ ws.on('headers', (headers, req, res) => {
     headers.push('Set-Cookie: ' + newCookie)
     req.headers.cookie = newCookie // Hack to get the new cookie in the connection callback
   }
-});
+})
 
 ws.on('connection', (sock, req) => {
-  const user = (req.headers.cookie && cookie.parse(req.headers.cookie).voter)
+  const user = cookie.parse(req.headers.cookie || '').voter
   if (!user) { sock.close() }
   sock.on('message', (d) => {
-    let message;
-    try {
-      message = JSON.parse(d)
-    } catch (e) { console.log(e) }
+    let message
+    try { message = JSON.parse(d) } catch (e) { console.log('Failed to parse JSON') }
     if (message) {
-      try { handleMessage(sock, message, user) } catch (e) { console.log(e) }
+      try {
+        handleMessage(sock, message, user)
+      } catch (e) { console.error(e) }
     }
-  });
+  })
 })
 
 server.listen(1234)

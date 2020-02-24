@@ -6,9 +6,31 @@ const make = function makePoll (text, possibleVotes) {
   }
 }
 
+const removeVote = function removeVotePoll (poll, voter) {
+  const vote = poll.voters[voter]
+  const newVotes = {
+    ...poll.votes,
+    [vote]: poll.votes[vote] - 1
+  }
+
+  return {
+    ...poll,
+    voters: {
+      ...poll.voters,
+      [voter]: undefined,
+    },
+    votes: newVotes
+  }
+}
+
 const vote = function votePoll (poll, vote, voter) {
   if (!(vote in poll.votes)) { throw new Error("not valid vote") }
-  if (poll.voters.has(voter)) { throw new Error("voter already voted") }
+  
+  if (poll.voters[voter] !== undefined) {
+    console.log('remove vote', poll, voter)
+    const pollWithOldVoteRemoved = removeVote(poll, voter)
+    return votePoll(pollWithOldVoteRemoved, vote, voter);
+  }
 
   const newVotes = {
     ...poll.votes,
@@ -17,7 +39,10 @@ const vote = function votePoll (poll, vote, voter) {
 
   return {
     ...poll,
-    voters: new Set([...poll.voters, voter]),
+    voters: {
+      ...poll.voters,
+      [voter]: vote,
+    },
     votes: newVotes
   }
 }
