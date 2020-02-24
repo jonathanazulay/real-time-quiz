@@ -22,19 +22,107 @@ body {
 button {
   font-size: 22px;
   font-weight: bold;
-  background: var(--color-orange);
-  color: var(--color-white);
-  border: 1px solid var(--color-orange-dark);
+  color: var(--color-black);
+  border: none;
   border-radius: 2px;
   padding: 0.75rem 1rem;
+  background-color: #ffff79;
+}
+
+h2 span {
+  font-size: 70px;
 }
 
 textarea {
   padding: 0.75rem 1rem;
   resize: none;
   font-size: 22px;
-  background: linear-gradient(45deg, #020202, #151515);
+  background: transparent;
   color: var(--color-white);
   border: 1px solid var(--color-blue-dark);
-  border-radius: 2px;
+  border-radius: 0px;
+}
+
+.slide {
+  padding: 1rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.poll__form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+} 
+
+.poll__form textarea {
+  height: 200px;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.poll__form textarea:focus {
+  outline: none;
+}
+
+.poll-view {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.poll-view > .poll-view__result {
+  display: flex;
+  flex-direction: row;
+  height: 50%;
+  align-items: flex-end;
+  margin: -1rem;
+}
+
+.poll-view .poll-view__bar {
+  width: 100%;
+  text-align: center;
+  background: #949441;
+  color: var(--color-black);
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease;
+  height: 0;
+}
+
+.poll-view__button {
+  width: 100%;
+  border: 0;
+  font-size: 0.8rem;
+  font-weight: normal;
+  letter-spacing: 0.3rem;
+  border-radius: 0;
+}
+
+.poll-view__button > span {
+  font-size: 20px;
+}
+
+.poll-view__button:hover {
+  opacity: 0.8;
+}
+
+.poll-view__result > div {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 3px;
+  padding-bottom: 0;
 }

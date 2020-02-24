@@ -1,105 +1,92 @@
 const express = require('express')
 const WebSocket = require('ws')
 const http = require('http')
-const cookieParser = require('cookie-parser')
 const cookie = require('cookie')
 const app = express()
 
-const server = http.createServer({}, app)
-const ws = new WebSocket.Server({ server: server, path: '/ws' })
-const { make: makeQuiz, vote: voteQuiz } = require('./quiz')
+const { make: makePoll, vote: votePoll } = require('./poll')
 const createPubsub = require('./pubsub')
 
-let quizes = {}
+let polls = {}
 let pubsub = createPubsub()
 
-function handleMessage (fromSocket, data, user) {
-  if (!data.type) { return }
+function handleMessage(fromSocket, data, user) {
+  if (!data.type) { return }
   switch (data.type) {
-    case 'votequiz':
-      createVote(data.quizId, data.vote, user)
+    case 'votepoll':
+      createVote(data.pollId, data.vote, user)
+      broadcastPoll(data.pollId)
       break
-    case 'createquiz':
-      createQuiz(data.text)
+    case 'createpoll':
+      const votedPoll = createPoll(data.text)
+      subscribeToPoll(fromSocket, votedPoll)
       break
-    case 'subscribequiz':
-      createSubscription(fromSocket, data.quizId)
-      pubsub.broadcast(data.quizId, 'hello from ' + data.quizId)
+    case 'subscribepoll':
+      subscribeToPoll(fromSocket, polls[data.pollId])
       break
     default:
       break
   }
 }
 
-function createSubscription (socket, quizId) {
-  pubsub.subscribe(socket, quizId)
+function subscribeToPoll(socket, poll) {
+  pubsub.unsubscribe(socket)
+  pubsub.subscribe(socket, poll.id)
+  broadcastPoll(poll.id)
 }
 
-function createVote (quizId, vote, user) {
-  if (!quizes[quizId]) { throw new Error("quiz does not exist") }
-  quizes[quizId] = {
-    ...quizes[quizId],
-    quiz: voteQuiz(quizes[quizId].quiz, vote, user)
+function broadcastPoll(pollId) {
+  const poll = polls[pollId]
+  if (!poll) { return }
+  pubsub.broadcast(poll.id, JSON.stringify({ id: poll.id, activeVote: null, text: poll.poll.text, result: poll.poll.votes }))
+}
+
+function createVote(pollId, vote, user) {
+  if (!polls[pollId]) { throw new Error("poll does not exist") }
+  polls[pollId] = {
+    ...polls[pollId],
+    poll: votePoll(polls[pollId].poll, vote, user)
   }
 }
 
-function createQuiz (text) {
+function createPoll(text) {
   const id = (Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).toString(36);
-  const newQuiz = {
+  const newPoll = {
     id,
     voters: new Set(),
-    quiz: makeQuiz(text, ["1/2", "2", "4"])
+    poll: makePoll(text, ["1/2", "2", "4"])
   }
-  quizes = {
-    ...quizes,
-    [id]: newQuiz,
+  polls = {
+    ...polls,
+    [id]: newPoll,
   }
-  return newQuiz
+  return newPoll
 }
 
-app.use(cookieParser())
-app.use((req, res, next) => {
-  if (req.cookies.voter) { return next() }
-  res.cookie('voter', Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(36))
-  next()
-})
+const server = http.createServer({}, app)
+const ws = new WebSocket.Server({ server: server, path: '/ws' })
 
-app.get('/quizes', function getQuizes (req, res) {
-  res.send(quizes)
-})
+ws.on('headers', (headers, req, res) => {
+  const userCookie = cookie.parse(req.headers.cookie || '')
+  if (!userCookie.voter) {
+    const newCookie = cookie.serialize('voter', Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(36))
+    headers.push('Set-Cookie: ' + newCookie)
+    req.headers.cookie = newCookie // Hack to get the new cookie in the connection callback
+  }
+});
 
 ws.on('connection', (sock, req) => {
-  const user = req.headers.cookie && cookie.parse(req.headers.cookie).voter
-  //connections.push(sock)
+  const user = (req.headers.cookie && cookie.parse(req.headers.cookie).voter)
+  if (!user) { sock.close() }
   sock.on('message', (d) => {
     let message;
     try {
       message = JSON.parse(d)
-    } catch (e) { console.log(e) }
+    } catch (e) { console.log(e) }
     if (message) {
-      try { handleMessage(sock, message, user) } catch (e) { }
+      try { handleMessage(sock, message, user) } catch (e) { console.log(e) }
     }
   });
 })
 
 server.listen(1234)
-
-
-/*
-  console.log(handleNewQuiz('Göra frukost'))
-  console.log(handleNewQuiz('Göra frukost'))
-  console.log(handleNewQuiz('Göra frukost'))
-  console.log(handleNewQuiz('Göra frukost'))
-  console.log(handleVote(
-    quizes[Object.keys(quizes)[3]].id,
-    "2",
-    "kallenaka"
-  ))
-  console.log(handleVote(
-    quizes[Object.keys(quizes)[3]].id,
-    "2",
-    "kallenaka2"
-  ))
-
-  console.log(quizes[Object.keys(quizes)[3]])
-  */
