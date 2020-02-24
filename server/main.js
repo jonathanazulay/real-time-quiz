@@ -3,6 +3,7 @@ const WebSocket = require('ws')
 const http = require('http')
 const cookie = require('cookie')
 const app = express()
+const path = require('path')
 
 const { make: makePoll, vote: votePoll } = require('./poll')
 const createPubsub = require('./pubsub')
@@ -62,6 +63,11 @@ function createPoll(text) {
   }
   return newPoll
 }
+
+app.use(express.static('./build'))
+app.use('*', function (req, res) {
+  res.sendFile(path.resolve(__dirname + '/../build/index.html'))
+});
 
 const server = http.createServer({}, app)
 const ws = new WebSocket.Server({ server: server, path: '/ws' })

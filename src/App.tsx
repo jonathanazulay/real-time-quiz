@@ -3,7 +3,7 @@ import { CreatePoll } from './CreatePoll'
 import { PollView } from './PollView'
 import { Poll } from './poll'
 
-const addr = `ws://${window.location.hostname}:3000/ws`
+const addr = `ws://${window.location.host}/ws`
 console.log(addr)
 
 interface PollAPI {
