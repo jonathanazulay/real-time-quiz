@@ -42,7 +42,7 @@ const usePollBackend: () => [Poll | undefined, PollAPI | undefined] = function u
 function App() {
   const [text, setText] = useState<string>()
   const [activePoll, PollAPI] = usePollBackend()
-  const ref = useRef<any>(null)
+  const resultPageEl = useRef<any>(null)
 
   useEffect(() => {
     const urlFragment = window.location.pathname.substring(1)
@@ -58,9 +58,9 @@ function App() {
   }, [activePoll])
 
   useLayoutEffect(() => {
-    if (!activePoll || !ref.current) { return }
+    if (!activePoll || !resultPageEl.current) { return }
     window.scrollTo({
-      top: ref.current.offsetTop,
+      top: resultPageEl.current.offsetTop,
       left: 0,
       behavior: 'smooth'
     });

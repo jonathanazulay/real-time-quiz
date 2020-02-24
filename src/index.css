@@ -39,8 +39,8 @@ textarea {
   font-size: 22px;
   background: transparent;
   color: var(--color-white);
-  border: 1px solid var(--color-blue-dark);
-  border-radius: 0px;
+  border: 1px solid #171d27;
+  border-radius: 2px;
 }
 
 .slide {
@@ -62,7 +62,6 @@ textarea {
 .poll__form textarea {
   height: 200px;
   margin-bottom: 1rem;
-  border-radius: 8px;
 }
 
 .poll__form textarea:focus {
