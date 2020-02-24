@@ -55,7 +55,7 @@ function createPoll(text) {
   const newPoll = {
     id,
     voters: new Set(),
-    poll: makePoll(text, ["1/2", "2", "4"])
+    poll: makePoll(text, ["0", "1/2", "1", "2", "3", "5", "8", "13"])
   }
   polls = {
     ...polls,
