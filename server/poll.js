@@ -1,7 +1,7 @@
 const make = function makePoll (text, possibleVotes) {
   return {
     text,
-    voters: new Set(),
+    voters: {},
     votes: possibleVotes.reduce((acc, possibleVote) => ({ ...acc, [possibleVote]: 0 }), {}),
   }
 }
@@ -25,7 +25,7 @@ const removeVote = function removeVotePoll (poll, voter) {
 
 const vote = function votePoll (poll, vote, voter) {
   if (!(vote in poll.votes)) { throw new Error("not valid vote") }
-  
+
   if (poll.voters[voter] !== undefined) {
     poll = removeVote(poll, voter)
   }
