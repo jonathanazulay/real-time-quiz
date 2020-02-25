@@ -69,11 +69,23 @@ function App() {
   return (
     <div>
       <div className="slide">
-        {PollAPI ? <CreatePoll onSubmit={PollAPI ? () => PollAPI.create(text || '') : () => { }} onChangeText={setText} text={text}></CreatePoll> : null}
+        {
+          PollAPI
+            ? <CreatePoll
+                onSubmit={PollAPI ? () => PollAPI.create(text || '') : () => { }}
+                onChangeText={setText}
+                text={text} />
+            : null}
       </div>
-      {activePoll !== undefined ? <div className="slide" ref={resultPageEl}>
-        <PollView onVote={(alternative) => PollAPI?.vote(activePoll?.id, alternative)} poll={activePoll}></PollView>
-      </div> : null}
+      {
+        activePoll !== undefined
+          ? <div className="slide" ref={resultPageEl}>
+              <PollView
+                onVote={(alternative) => PollAPI?.vote(activePoll?.id, alternative)}
+                poll={activePoll} />
+            </div>
+          : null
+      }
     </div>
   )
 }
