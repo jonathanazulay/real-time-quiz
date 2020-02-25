@@ -32,6 +32,9 @@ const usePollBackend: () => [Poll | undefined, PollAPI | undefined] = function u
       })
     })
     ws.current.addEventListener('open', (s) => setIsOpen(true))
+    return () => {
+      ws.current?.close()
+    }
   }, [])
   return [
     currentPoll,
