@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { Poll } from './poll'
 
 const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0)

@@ -47,7 +47,7 @@ function App() {
   useEffect(() => {
     const urlFragment = window.location.pathname.substring(1)
     if (!urlFragment) { return }
-    window.history.pushState(null, '', urlFragment);
+    window.history.pushState(null, '', urlFragment)
     PollAPI && PollAPI.join(urlFragment)
   }, [PollAPI])
 
@@ -63,7 +63,7 @@ function App() {
       top: resultPageEl.current.offsetTop,
       left: 0,
       behavior: 'smooth'
-    });
+    })
   }, [activePoll])
 
   return (

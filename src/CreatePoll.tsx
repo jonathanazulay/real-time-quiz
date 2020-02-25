@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const placeholderText = `Visualize the results in real-time of a poll: Anyone should be able to see the results of a poll. If user A is casting a vote "2", user B should in real-time be able to see that the point "2" has a value of 1.`
 const randomGreeting = (() => {
