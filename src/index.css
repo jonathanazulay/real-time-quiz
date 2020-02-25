@@ -114,7 +114,9 @@ textarea {
   align-items: center;
   justify-content: center;
   border-radius: 2px 2px 0 0;
-  transition: height 0.5s ease;
+  transition: height 0.4s;
+  transition-timing-function: cubic-bezier(0, 0.71, 0.77, 1.4);
+
   height: 0;
 }
 

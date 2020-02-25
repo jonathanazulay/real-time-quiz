@@ -9,6 +9,7 @@ interface PollAPI {
   create: (text: string) => void,
   vote: (pollId: string, vote: string) => void,
   join: (pollId: string) => void,
+  close: () => void,
 }
 
 const usePollBackend: () => [Poll | undefined, PollAPI | undefined] = function usePollBackend() {
@@ -18,6 +19,7 @@ const usePollBackend: () => [Poll | undefined, PollAPI | undefined] = function u
     create: (text) => ws.current?.send(JSON.stringify({ type: 'createpoll', text })),
     join: (pollId) => ws.current?.send(JSON.stringify({ type: 'subscribepoll', pollId: pollId })),
     vote: (pollId, vote) => ws.current?.send(JSON.stringify({ type: 'votepoll', pollId: pollId, vote })),
+    close: () => ws.current?.close(),
   })
   const ws = useRef<WebSocket>()
   useEffect(() => {
@@ -32,6 +34,7 @@ const usePollBackend: () => [Poll | undefined, PollAPI | undefined] = function u
       })
     })
     ws.current.addEventListener('open', (s) => setIsOpen(true))
+    ws.current.addEventListener('close', () => setIsOpen(false))
     return () => {
       ws.current?.close()
     }
@@ -51,6 +54,9 @@ function App() {
     const urlFragment = window.location.pathname.substring(1)
     if (!urlFragment) { return }
     PollAPI && PollAPI.join(urlFragment)
+    return () => {
+      PollAPI?.close()
+    }
   }, [PollAPI])
 
   useEffect(() => {
