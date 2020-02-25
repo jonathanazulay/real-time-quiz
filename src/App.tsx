@@ -47,7 +47,6 @@ function App() {
   useEffect(() => {
     const urlFragment = window.location.pathname.substring(1)
     if (!urlFragment) { return }
-    window.history.pushState(null, '', urlFragment)
     PollAPI && PollAPI.join(urlFragment)
   }, [PollAPI])
 
