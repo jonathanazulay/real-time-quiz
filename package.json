@@ -22,7 +22,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start:production": "react-scripts build && node ./server/main.js"
   },
   "eslintConfig": {
     "extends": "react-app"
